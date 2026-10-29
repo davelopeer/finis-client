@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import CategoryTag from "../ui/CategoryTag.jsx";
 import RecommendationBadge from "../ui/RecommendationBadge.jsx";
+import ShareMenu from "./ShareMenu.jsx";
 import styles from "./PostCard.module.css";
 
 function DescriptionPreview({ text, title }) {
@@ -120,9 +121,7 @@ function PostCard({ post, canManage = false, onEdit, onDelete }) {
         <DescriptionPreview text={post.description} title={post.title} />
 
         <footer className={styles.actions}>
-          <button className={styles.actionButton} type="button">
-            Compartilhar
-          </button>
+          <ShareMenu post={post} buttonClassName={styles.actionButton} />
           {canManage ? (
             <>
               <button
