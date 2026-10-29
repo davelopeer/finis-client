@@ -4,9 +4,15 @@
   user-select: none;
 }
 
-.size-sm { font-size: 18px; }
-.size-md { font-size: 24px; }
-.size-lg { font-size: 32px; }
+.size-sm {
+  font-size: 18px;
+}
+.size-md {
+  font-size: 24px;
+}
+.size-lg {
+  font-size: 32px;
+}
 
 .slot {
   position: relative;
@@ -27,7 +33,7 @@
 }
 
 .star::before {
-  content: '★';
+  content: "★";
   position: absolute;
   left: 0;
   top: 0;
@@ -38,9 +44,15 @@
   pointer-events: none;
 }
 
-.star.full::before  { width: 100%; }
-.star.half::before  { width: 52%; }
-.star.empty::before { width: 0%; }
+.star.full::before {
+  width: 100%;
+}
+.star.half::before {
+  width: 52%;
+}
+.star.empty::before {
+  width: 0%;
+}
 
 /* Interactive click zones overlay the star */
 .halfZone,
@@ -53,8 +65,48 @@
   cursor: pointer;
 }
 
-.halfZone { left: 0; }
-.fullZone { right: 0; }
+.halfZone {
+  left: 0;
+}
+.fullZone {
+  right: 0;
+}
+
+/* When there is no half zone, the full zone covers the whole star. */
+.slot > .fullZone:only-of-type {
+  width: 100%;
+}
+
+/* "Obra prima" masterpiece star sits slightly apart from the 1–5 scale. */
+.masterpieceSlot {
+  margin-left: 8px;
+}
+
+.masterpieceStar {
+  color: var(--color-ink-200, #d0ccc8);
+}
+
+.masterpieceStar.masterpieceActive::before {
+  content: "★";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  overflow: hidden;
+  /* azul-acinzentado */
+  color: #6b7f99;
+  pointer-events: none;
+}
+
+.masterpieceLabel {
+  align-self: center;
+  margin-left: 6px;
+  font-size: 0.7em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #6b7f99;
+  white-space: nowrap;
+}
 
 .halfZone:focus,
 .fullZone:focus {

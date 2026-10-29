@@ -3,13 +3,12 @@ import { apiRequest } from "./client.js";
 const REVIEWS_API_BASE = "/v1/reviews";
 const PROFILES_API_BASE = "/v1/profiles";
 
-export function createReview(token, payload) {
+function buildReviewBody(payload) {
   const body = new FormData();
-  body.append("mediaTitle", payload.mediaTitle);
-  body.append("mediaAuthor", payload.mediaAuthor ?? "");
-  body.append("mediaYear", payload.mediaYear ? String(payload.mediaYear) : "");
-  body.append("category", payload.category);
-  body.append("rating", String(payload.rating));
+  body.append("workId", payload.workId ?? "");
+  body.append("mediaType", payload.mediaType ?? "");
+  body.append("rating", String(payload.rating ?? 0));
+  body.append("isMasterpiece", String(payload.isMasterpiece ?? false));
   body.append("description", payload.description ?? "");
   body.append("isPrivate", String(payload.isPrivate ?? false));
 
@@ -17,39 +16,22 @@ export function createReview(token, payload) {
     body.append("finishedAt", payload.finishedAt);
   }
 
-  if (payload.mediaSubtitle) {
-    body.append("mediaSubtitle", payload.mediaSubtitle);
-  }
+  return body;
+}
 
+export function createReview(token, payload) {
   return apiRequest(REVIEWS_API_BASE, {
     method: "POST",
     token,
-    body,
+    body: buildReviewBody(payload),
   });
 }
 
 export function updateReview(token, id, payload) {
-  const body = new FormData();
-  body.append("mediaTitle", payload.mediaTitle);
-  body.append("mediaAuthor", payload.mediaAuthor ?? "");
-  body.append("mediaYear", payload.mediaYear ? String(payload.mediaYear) : "");
-  body.append("category", payload.category);
-  body.append("rating", String(payload.rating));
-  body.append("description", payload.description ?? "");
-  body.append("isPrivate", String(payload.isPrivate ?? false));
-
-  if (payload.finishedAt) {
-    body.append("finishedAt", payload.finishedAt);
-  }
-
-  if (payload.mediaSubtitle) {
-    body.append("mediaSubtitle", payload.mediaSubtitle);
-  }
-
   return apiRequest(`${REVIEWS_API_BASE}/${encodeURIComponent(id)}`, {
     method: "PATCH",
     token,
-    body,
+    body: buildReviewBody(payload),
   });
 }
 

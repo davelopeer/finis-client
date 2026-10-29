@@ -9,6 +9,8 @@ import HomePage from "./pages/HomePage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import EditProfilePage from "./pages/EditProfilePage.jsx";
 import CreateReviewPage from "./pages/CreateReviewPage.jsx";
+import RegisterFinisPage from "./pages/RegisterFinisPage.jsx";
+import RequestWorkPage from "./pages/RequestWorkPage.jsx";
 import FriendsPage from "./pages/FriendsPage.jsx";
 import StaticPage from "./pages/StaticPage.jsx";
 
@@ -43,6 +45,11 @@ function App() {
             element={<Navigate to="/profile/edit" replace />}
           />
           <Route path="/criar-review" element={<CreateReviewPage />} />
+          <Route path="/criar-review/solicitar" element={<RequestWorkPage />} />
+          <Route
+            path="/criar-review/:mediaType"
+            element={<RegisterFinisPage />}
+          />
           <Route path="/amigos" element={<FriendsPage />} />
 
           <Route

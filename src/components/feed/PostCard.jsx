@@ -111,7 +111,10 @@ function PostCard({ post, canManage = false, onEdit, onDelete }) {
         {post.subtitle && <p className={styles.subtitle}>{post.subtitle}</p>}
 
         <div className={styles.ratingRow}>
-          <RecommendationBadge rating={post.rating} />
+          <RecommendationBadge
+            rating={post.rating}
+            masterpiece={post.isMasterpiece}
+          />
         </div>
 
         <DescriptionPreview text={post.description} title={post.title} />

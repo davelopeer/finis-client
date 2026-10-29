@@ -2,44 +2,49 @@ import { useState } from "react";
 import Button from "../ui/Button.jsx";
 import Icon from "../ui/Icon.jsx";
 import StarRating from "../ui/StarRating.jsx";
-import { MEDIA_CATEGORIES } from "../../data/mockData.js";
+import CategoryTag from "../ui/CategoryTag.jsx";
 import { todayISODate } from "../../utils/reviewPost.js";
 import styles from "./ReviewForm.module.css";
 
 export const MAX_REVIEW_DESCRIPTION_LENGTH = 1902;
 
+/**
+ * ReviewForm collects the finis details for a work that was already picked from
+ * the catalog. The work itself (title/author/year) is fixed and shown read-only;
+ * the user only edits the finish date, rating (+obra prima), description and
+ * visibility.
+ *
+ * `work` is the selected catalog item: { id, title, subtitle, mediaType }. In
+ * edit mode it is derived from the review's editValues.
+ */
 function ReviewForm({
   onSubmit,
   onCancel,
   isSubmitting = false,
   errorMessage = "",
   mode = "create",
+  work,
   initialValues = null,
-  categories = MEDIA_CATEGORIES,
 }) {
   const isEdit = mode === "edit";
-  const availableCategories =
-    Array.isArray(categories) && categories.length > 0
-      ? categories
-      : MEDIA_CATEGORIES;
-  const [title, setTitle] = useState(initialValues?.mediaTitle ?? "");
-  const [mediaAuthor, setMediaAuthor] = useState(
-    initialValues?.mediaAuthor ?? "",
-  );
-  const [mediaYear, setMediaYear] = useState(
-    initialValues?.mediaYear ? String(initialValues.mediaYear) : "",
-  );
-  const [category, setCategory] = useState(() => {
-    const initialCategory = initialValues?.category;
-    if (
-      initialCategory &&
-      availableCategories.some((item) => item.id === initialCategory)
-    ) {
-      return initialCategory;
-    }
-    return availableCategories[0].id;
-  });
+
+  const resolvedWork =
+    work ??
+    (initialValues
+      ? {
+          id: initialValues.workId,
+          title: initialValues.mediaTitle,
+          subtitle: [initialValues.mediaAuthor, initialValues.mediaYear]
+            .filter(Boolean)
+            .join(", "),
+          mediaType: initialValues.mediaType || initialValues.category,
+        }
+      : null);
+
   const [rating, setRating] = useState(initialValues?.rating ?? 0);
+  const [isMasterpiece, setIsMasterpiece] = useState(
+    initialValues?.isMasterpiece ?? false,
+  );
   const [description, setDescription] = useState(
     initialValues?.description ?? "",
   );
@@ -51,7 +56,7 @@ function ReviewForm({
   const descriptionLength = [...description].length;
   const remainingCharacters = MAX_REVIEW_DESCRIPTION_LENGTH - descriptionLength;
   const canSubmit =
-    title.trim().length > 0 &&
+    Boolean(resolvedWork?.id) &&
     rating > 0 &&
     finishedAt &&
     remainingCharacters >= 0 &&
@@ -61,11 +66,10 @@ function ReviewForm({
     event.preventDefault();
     if (!canSubmit) return;
     onSubmit({
-      mediaTitle: title,
-      mediaAuthor: mediaAuthor.trim(),
-      mediaYear: mediaYear.trim(),
-      category,
+      workId: resolvedWork.id,
+      mediaType: resolvedWork.mediaType,
       rating,
+      isMasterpiece,
       description,
       finishedAt,
       isPrivate,
@@ -83,62 +87,21 @@ function ReviewForm({
         </p>
       </header>
 
-      <div className={styles.grid}>
-        <div className={styles.field}>
-          <label htmlFor="review-title">Mídia (obra)</label>
-          <input
-            id="review-title"
-            className={styles.input}
-            type="text"
-            placeholder="Ex: Neuromancer"
-            value={title}
-            onChange={(event) => setTitle(event.target.value)}
-          />
+      {resolvedWork && (
+        <div className={styles.workCard}>
+          {resolvedWork.mediaType && (
+            <CategoryTag categoryId={resolvedWork.mediaType} />
+          )}
+          <div className={styles.workText}>
+            <span className={styles.workTitle}>{resolvedWork.title}</span>
+            {resolvedWork.subtitle && (
+              <span className={styles.workSubtitle}>
+                {resolvedWork.subtitle}
+              </span>
+            )}
+          </div>
         </div>
-
-        <div className={styles.field}>
-          <label htmlFor="review-category">Categoria</label>
-          <select
-            id="review-category"
-            className={styles.input}
-            value={category}
-            onChange={(event) => setCategory(event.target.value)}
-          >
-            {availableCategories.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div className={styles.grid}>
-        <div className={styles.field}>
-          <label htmlFor="review-author">Autor/produtora</label>
-          <input
-            id="review-author"
-            className={styles.input}
-            type="text"
-            placeholder="Ex: William Gibson (opcional)"
-            value={mediaAuthor}
-            onChange={(event) => setMediaAuthor(event.target.value)}
-          />
-        </div>
-
-        <div className={styles.field}>
-          <label htmlFor="review-year">Ano da obra</label>
-          <input
-            id="review-year"
-            className={styles.input}
-            type="number"
-            inputMode="numeric"
-            placeholder="Ex: 1984 (opcional)"
-            value={mediaYear}
-            onChange={(event) => setMediaYear(event.target.value)}
-          />
-        </div>
-      </div>
+      )}
 
       <div className={styles.field}>
         <label htmlFor="review-finished-at">Data de término</label>
@@ -154,10 +117,14 @@ function ReviewForm({
       <div className={styles.field}>
         <label>Nota</label>
         <div className={styles.ratingRow}>
-          <StarRating value={rating} onChange={setRating} size="lg" />
-          {rating > 0 && (
-            <span className={styles.ratingLabel}>{rating} / 5</span>
-          )}
+          <StarRating
+            value={rating}
+            onChange={setRating}
+            size="lg"
+            allowMasterpiece
+            masterpiece={isMasterpiece}
+            onMasterpieceChange={setIsMasterpiece}
+          />
         </div>
       </div>
 
@@ -203,7 +170,7 @@ function ReviewForm({
           onClick={onCancel}
           disabled={isSubmitting}
         >
-          Cancelar
+          {isEdit ? "Cancelar" : "Voltar"}
         </Button>
         <Button type="submit" variant="primary" disabled={!canSubmit}>
           {isEdit

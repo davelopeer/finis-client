@@ -344,7 +344,6 @@ function ProfilePage() {
             <ReviewForm
               mode="edit"
               initialValues={editingPost.editValues}
-              categories={preferredCategories}
               onSubmit={handleSubmitEdit}
               onCancel={handleCloseEdit}
               isSubmitting={isSubmittingEdit}
