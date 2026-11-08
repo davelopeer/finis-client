@@ -1,24 +1,24 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import PostCard from '../components/feed/PostCard.jsx';
-import FeedFilters from '../components/feed/FeedFilters.jsx';
-import * as feedApi from '../api/feed.js';
-import { useAuth } from '../auth/AuthContext.jsx';
-import { reviewToPost } from '../utils/reviewPost.js';
-import styles from './HomePage.module.css';
+import { useCallback, useEffect, useRef, useState } from "react";
+import PostCard from "../components/feed/PostCard.jsx";
+import FeedFilters from "../components/feed/FeedFilters.jsx";
+import * as feedApi from "../api/feed.js";
+import { useAuth } from "../auth/AuthContext.jsx";
+import { reviewToPost } from "../utils/reviewPost.js";
+import styles from "./HomePage.module.css";
 
 function HomePage() {
   const { token } = useAuth();
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [posts, setPosts] = useState([]);
-  const [offset, setOffset] = useState(0);
+  const [nextCursor, setNextCursor] = useState(null);
   const [hasMore, setHasMore] = useState(false);
-  const [status, setStatus] = useState('loading');
+  const [status, setStatus] = useState("loading");
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const loadMoreRef = useRef(null);
 
   const fetchFeed = useCallback(
-    async ({ nextOffset = 0, append = false } = {}) => {
+    async ({ cursor = null, append = false } = {}) => {
       if (!token) {
         return;
       }
@@ -26,67 +26,69 @@ function HomePage() {
       if (append) {
         setIsLoadingMore(true);
       } else {
-        setStatus('loading');
-        setErrorMessage('');
+        setStatus("loading");
+        setErrorMessage("");
       }
 
       try {
         const response = await feedApi.getFriendsFeed(token, {
-          offset: nextOffset,
-          categories: selectedCategories
+          cursor,
+          categories: selectedCategories,
         });
 
         const mappedPosts = (response.items ?? []).map(reviewToPost);
 
-        setPosts((previous) => (append ? [...previous, ...mappedPosts] : mappedPosts));
-        setOffset(nextOffset + mappedPosts.length);
+        setPosts((previous) =>
+          append ? [...previous, ...mappedPosts] : mappedPosts,
+        );
+        setNextCursor(response.nextCursor ?? null);
         setHasMore(Boolean(response.hasMore));
-        setStatus('success');
+        setStatus("success");
       } catch (error) {
         if (append) {
           setErrorMessage(error.message);
         } else {
           setPosts([]);
-          setOffset(0);
+          setNextCursor(null);
           setHasMore(false);
-          setStatus('error');
+          setStatus("error");
           setErrorMessage(error.message);
         }
       } finally {
         setIsLoadingMore(false);
       }
     },
-    [selectedCategories, token]
+    [selectedCategories, token],
   );
 
   useEffect(() => {
-    fetchFeed({ nextOffset: 0, append: false });
+    fetchFeed({ cursor: null, append: false });
   }, [fetchFeed]);
 
   useEffect(() => {
     const target = loadMoreRef.current;
-    if (!target || !hasMore || status !== 'success' || isLoadingMore) {
+    if (!target || !hasMore || status !== "success" || isLoadingMore) {
       return undefined;
     }
 
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries.some((entry) => entry.isIntersecting)) {
-          fetchFeed({ nextOffset: offset, append: true });
+          fetchFeed({ cursor: nextCursor, append: true });
         }
       },
-      { rootMargin: '240px 0px' }
+      { rootMargin: "240px 0px" },
     );
 
     observer.observe(target);
     return () => observer.disconnect();
-  }, [fetchFeed, hasMore, isLoadingMore, offset, status]);
+  }, [fetchFeed, hasMore, isLoadingMore, nextCursor, status]);
 
   const toggleCategory = (categoryId) => {
     setSelectedCategories((previous) =>
       previous.includes(categoryId)
         ? previous.filter((id) => id !== categoryId)
-        : [...previous, categoryId]
+        : [...previous, categoryId],
     );
   };
 
@@ -101,28 +103,30 @@ function HomePage() {
             <p>O que seus amigos andam lendo, vendo e jogando.</p>
           </div>
           <span className={styles.feedCount}>
-            {posts.length} {posts.length === 1 ? 'post' : 'posts'}
+            {posts.length} {posts.length === 1 ? "post" : "posts"}
           </span>
         </header>
 
         <div className={styles.posts}>
-          {status === 'loading' && (
+          {status === "loading" && (
             <div className={styles.empty} aria-live="polite">
               <h3>Carregando feed...</h3>
               <p>Buscando as reviews mais recentes dos seus amigos.</p>
             </div>
           )}
 
-          {status === 'error' && (
+          {status === "error" && (
             <div className={styles.empty} aria-live="assertive">
               <h3>Não foi possível carregar o feed.</h3>
               <p>{errorMessage}</p>
             </div>
           )}
 
-          {status === 'success' && posts.length > 0 && posts.map((post) => <PostCard key={post.id} post={post} />)}
+          {status === "success" &&
+            posts.length > 0 &&
+            posts.map((post) => <PostCard key={post.id} post={post} />)}
 
-          {status === 'success' && posts.length === 0 && (
+          {status === "success" && posts.length === 0 && (
             <div className={styles.empty}>
               {hasActiveFilters ? (
                 <>
@@ -132,19 +136,27 @@ function HomePage() {
               ) : (
                 <>
                   <h3>Nenhum post por aqui ainda.</h3>
-                  <p>Quando seus amigos publicarem reviews, elas aparecerão aqui.</p>
+                  <p>
+                    Quando seus amigos publicarem reviews, elas aparecerão aqui.
+                  </p>
                 </>
               )}
             </div>
           )}
 
-          {status === 'success' && hasMore && (
-            <div ref={loadMoreRef} className={styles.loadMore} aria-live="polite">
-              {isLoadingMore ? 'Carregando mais posts...' : 'Role para carregar mais'}
+          {status === "success" && hasMore && (
+            <div
+              ref={loadMoreRef}
+              className={styles.loadMore}
+              aria-live="polite"
+            >
+              {isLoadingMore
+                ? "Carregando mais posts..."
+                : "Role para carregar mais"}
             </div>
           )}
 
-          {status === 'success' && errorMessage && (
+          {status === "success" && errorMessage && (
             <div className={styles.empty} aria-live="assertive">
               <p>{errorMessage}</p>
             </div>

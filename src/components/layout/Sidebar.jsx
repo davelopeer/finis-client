@@ -12,6 +12,7 @@ import { currentUser } from "../../data/mockData.js";
 import styles from "./Sidebar.module.css";
 
 const sidebarLinks = [
+  { to: "/home", label: "Feed", icon: "home" },
   { to: "/profile", label: "Meu perfil", icon: "user" },
   { to: "/amigos", label: "Amigos", icon: "friends" },
 ];

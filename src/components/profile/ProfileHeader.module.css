@@ -115,9 +115,33 @@
 @media (max-width: 720px) {
   .content {
     grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    padding: var(--spacing-4);
+    gap: var(--spacing-3);
+  }
+
+  .info {
+    align-items: center;
+  }
+
+  .bio {
+    max-width: none;
+  }
+
+  .mediaStats {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-3);
   }
 
   .actions {
-    justify-content: flex-start;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .actions :global(button) {
+    width: 100%;
   }
 }

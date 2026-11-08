@@ -60,7 +60,9 @@
   color: var(--color-ink-700);
   padding: 8px 14px;
   border-radius: var(--radius-pill);
-  transition: background-color var(--transition-fast), color var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .link:hover {
@@ -88,4 +90,10 @@
 
 .logout:hover {
   color: var(--color-primary);
+}
+
+@media (max-width: 960px) {
+  .header {
+    display: none;
+  }
 }

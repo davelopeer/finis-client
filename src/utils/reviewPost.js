@@ -82,6 +82,7 @@ export function reviewToPost(review) {
     id: review.id,
     author: {
       name: review.author.displayName,
+      username: review.author.username ?? null,
       nickname: review.author.username
         ? `@${review.author.username}`
         : "Username ainda não definido",

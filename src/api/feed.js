@@ -1,11 +1,16 @@
-import { apiRequest } from './client.js';
+import { apiRequest } from "./client.js";
 
-const FEED_API_BASE = '/v1/feed';
+const FEED_API_BASE = "/v1/feed";
 
-export function getFriendsFeed(token, { offset = 0, categories = [] } = {}) {
+export function getFriendsFeed(token, { cursor = null, categories = [] } = {}) {
   const params = new URLSearchParams();
-  params.set('offset', String(offset));
-  categories.forEach((category) => params.append('category', category));
+  if (cursor) {
+    params.set("cursor", cursor);
+  }
+  categories.forEach((category) => params.append("category", category));
 
-  return apiRequest(`${FEED_API_BASE}?${params.toString()}`, { token });
+  const queryString = params.toString();
+  const url = queryString ? `${FEED_API_BASE}?${queryString}` : FEED_API_BASE;
+
+  return apiRequest(url, { token });
 }

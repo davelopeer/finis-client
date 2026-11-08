@@ -43,10 +43,12 @@
     box-shadow var(--transition-fast);
 }
 
-.typeCard:hover {
-  border-color: var(--color-primary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm, 0 4px 12px rgba(0, 0, 0, 0.06));
+@media (hover: hover) {
+  .typeCard:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm, 0 4px 12px rgba(0, 0, 0, 0.06));
+  }
 }
 
 .typeIcon {
@@ -58,4 +60,34 @@
   font-size: 16px;
   font-weight: 600;
   color: var(--color-ink-900);
+}
+
+@media (max-width: 720px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-3);
+  }
+
+  .typeCard {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--spacing-4);
+    padding: var(--spacing-3) var(--spacing-4);
+    min-height: 72px;
+    text-align: left;
+  }
+
+  .typeIcon {
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-muted);
+    flex-shrink: 0;
+  }
+
+  .typeLabel {
+    font-size: 17px;
+  }
 }

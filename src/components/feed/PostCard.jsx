@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { Link } from "react-router-dom";
+import Avatar from "../ui/Avatar.jsx";
 import CategoryTag from "../ui/CategoryTag.jsx";
+import Icon from "../ui/Icon.jsx";
 import RecommendationBadge from "../ui/RecommendationBadge.jsx";
-import ShareMenu from "./ShareMenu.jsx";
 import styles from "./PostCard.module.css";
 
 function DescriptionPreview({ text, title }) {
@@ -95,33 +97,61 @@ function DescriptionPreview({ text, title }) {
 }
 
 function PostCard({ post, canManage = false, onEdit, onDelete }) {
+  const author = post.author ?? {};
+
+  const authorContent = (
+    <>
+      <Avatar src={author.avatarUrl} alt={author.name} size="sm" />
+      <div className={styles.authorMeta}>
+        <span className={styles.authorName}>{author.name}</span>
+        {author.nickname ? (
+          <span className={styles.authorNick}>{author.nickname}</span>
+        ) : null}
+      </div>
+    </>
+  );
+
   return (
     <article className={styles.card}>
       <div className={styles.content}>
-        <div className={styles.meta}>
-          <div className={styles.metaLeft}>
-            <CategoryTag categoryId={post.category} />
-            {canManage && post.isPrivate ? (
-              <span className={styles.privateBadge}>Privado</span>
-            ) : null}
-          </div>
+        <header className={styles.header}>
+          {author.username ? (
+            <Link to={`/user/${author.username}`} className={styles.authorLink}>
+              {authorContent}
+            </Link>
+          ) : (
+            <div className={styles.authorLink}>{authorContent}</div>
+          )}
           <span className={styles.date}>{post.postedAt}</span>
-        </div>
+        </header>
 
-        <h3 className={styles.title}>{post.title}</h3>
-        {post.subtitle && <p className={styles.subtitle}>{post.subtitle}</p>}
-
-        <div className={styles.ratingRow}>
+        <div className={styles.titleRow}>
+          <CategoryTag categoryId={post.category} />
+          {canManage && post.isPrivate ? (
+            <span className={styles.privateBadge}>Privado</span>
+          ) : null}
           <RecommendationBadge
             rating={post.rating}
             masterpiece={post.isMasterpiece}
           />
         </div>
 
+        <h3 className={styles.title}>{post.title}</h3>
+        {post.subtitle && <p className={styles.subtitle}>{post.subtitle}</p>}
+
         <DescriptionPreview text={post.description} title={post.title} />
 
         <footer className={styles.actions}>
-          <ShareMenu post={post} buttonClassName={styles.actionButton} />
+          <button
+            className={styles.actionButton}
+            type="button"
+            disabled
+            aria-label="Comentar (em breve)"
+            title="Comentários em breve"
+          >
+            <Icon name="comment" size={16} />
+            Comentar
+          </button>
           {canManage ? (
             <>
               <button
@@ -139,11 +169,7 @@ function PostCard({ post, canManage = false, onEdit, onDelete }) {
                 Deletar
               </button>
             </>
-          ) : (
-            <button className={styles.actionButton} type="button">
-              Salvar
-            </button>
-          )}
+          ) : null}
         </footer>
       </div>
     </article>

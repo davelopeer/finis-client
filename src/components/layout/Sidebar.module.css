@@ -11,6 +11,12 @@
   align-self: flex-start;
 }
 
+@media (max-width: 960px) {
+  .sidebar {
+    display: none;
+  }
+}
+
 .userCard {
   display: flex;
   flex-direction: column;

@@ -1,12 +1,12 @@
-import { NavLink, Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../auth/AuthContext.jsx';
-import Icon from '../ui/Icon.jsx';
-import styles from './TopNavigation.module.css';
+import { NavLink, Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../auth/AuthContext.jsx";
+import Icon from "../ui/Icon.jsx";
+import styles from "./TopNavigation.module.css";
 
 const secondaryLinks = [
-  { to: '/quem-somos', label: 'Quem somos' },
-  { to: '/contato', label: 'Contato' },
-  { to: '/faq', label: 'FAQ' }
+  { to: "/quem-somos", label: "Quem somos" },
+  { to: "/contato", label: "Contato" },
+  { to: "/faq", label: "FAQ" },
 ];
 
 function TopNavigation() {
@@ -15,13 +15,13 @@ function TopNavigation() {
 
   const handleLogout = async () => {
     await signOut();
-    navigate('/', { replace: true });
+    navigate("/", { replace: true });
   };
 
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
-        <Link to="/profile" className={styles.brand}>
+        <Link to="/home" className={styles.brand}>
           <span className={styles.brandMark}>F</span>
           <span className={styles.brandName}>Finis</span>
         </Link>
@@ -31,13 +31,20 @@ function TopNavigation() {
             <NavLink
               key={item.to}
               to={item.to}
-              className={({ isActive }) => `${styles.link} ${isActive ? styles.linkActive : ''}`}
+              className={({ isActive }) =>
+                `${styles.link} ${isActive ? styles.linkActive : ""}`
+              }
             >
               {item.label}
             </NavLink>
           ))}
 
-          <button type="button" className={styles.logout} aria-label="Sair" onClick={handleLogout}>
+          <button
+            type="button"
+            className={styles.logout}
+            aria-label="Sair"
+            onClick={handleLogout}
+          >
             <Icon name="logout" size={16} />
             Sair
           </button>

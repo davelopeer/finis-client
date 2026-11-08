@@ -12,6 +12,8 @@ import CreateReviewPage from "./pages/CreateReviewPage.jsx";
 import RegisterFinisPage from "./pages/RegisterFinisPage.jsx";
 import RequestWorkPage from "./pages/RequestWorkPage.jsx";
 import FriendsPage from "./pages/FriendsPage.jsx";
+import SettingsPage from "./pages/SettingsPage.jsx";
+import ComingSoonPage from "./pages/ComingSoonPage.jsx";
 import StaticPage from "./pages/StaticPage.jsx";
 
 function RootRoute() {
@@ -21,7 +23,7 @@ function RootRoute() {
     return null;
   }
 
-  return isAuthenticated ? <Navigate to="/profile" replace /> : <LoginPage />;
+  return isAuthenticated ? <Navigate to="/home" replace /> : <LoginPage />;
 }
 
 function App() {
@@ -51,6 +53,16 @@ function App() {
             element={<RegisterFinisPage />}
           />
           <Route path="/amigos" element={<FriendsPage />} />
+          <Route path="/configuracoes" element={<SettingsPage />} />
+          <Route
+            path="/estatisticas"
+            element={
+              <ComingSoonPage
+                title="Estatísticas"
+                description="Em breve você verá um panorama do que já consumiu: totais por mídia, ritmo e descobertas."
+              />
+            }
+          />
 
           <Route
             path="/quem-somos"
