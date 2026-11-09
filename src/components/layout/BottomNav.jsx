@@ -12,7 +12,7 @@ function BottomNav() {
           `${styles.item} ${isActive ? styles.itemActive : ""}`
         }
       >
-        <Icon name="friends" size={22} />
+        <Icon name="home" size={22} />
         <span className={styles.label}>Feed</span>
       </NavLink>
 
@@ -37,13 +37,13 @@ function BottomNav() {
       </NavLink>
 
       <NavLink
-        to="/estatisticas"
+        to="/amigos"
         className={({ isActive }) =>
           `${styles.item} ${isActive ? styles.itemActive : ""}`
         }
       >
-        <Icon name="stats" size={22} />
-        <span className={styles.label}>Stats</span>
+        <Icon name="friends" size={22} />
+        <span className={styles.label}>Amigos</span>
       </NavLink>
 
       <NavLink

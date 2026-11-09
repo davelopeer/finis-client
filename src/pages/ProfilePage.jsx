@@ -5,6 +5,7 @@ import * as profileApi from "../api/profile.js";
 import * as reviewsApi from "../api/reviews.js";
 import { useAuth } from "../auth/AuthContext.jsx";
 import ProfileHeader from "../components/profile/ProfileHeader.jsx";
+import WorkListEditor from "../components/profile/WorkListEditor.jsx";
 import PostCard from "../components/feed/PostCard.jsx";
 import ReviewForm from "../components/review/ReviewForm.jsx";
 import { currentUser, MEDIA_CATEGORIES } from "../data/mockData.js";
@@ -13,8 +14,60 @@ import styles from "./ProfilePage.module.css";
 
 const profileTabs = [
   { id: "posts", label: "Finis" },
+  { id: "top", label: "Top 5" },
+  { id: "next", label: "Próximas" },
   { id: "about", label: "Sobre" },
 ];
+
+// groupWorksByMedia buckets a flat (already media+position ordered) work list
+// into per-media arrays keyed by media id.
+function groupWorksByMedia(works) {
+  const grouped = {};
+  for (const work of works ?? []) {
+    (grouped[work.mediaType] ??= []).push(work);
+  }
+  return grouped;
+}
+
+/**
+ * WorksTab renders a per-media-type set of ordered lists (Top 5 or Próximas).
+ * On the owner's profile it shows one list per enabled media so each can be
+ * curated; on other profiles it shows only the medias that actually have works.
+ */
+function WorksTab({ works, medias, isOwnProfile, onSave, emptyLabel }) {
+  const grouped = groupWorksByMedia(works);
+  const visibleMedias = isOwnProfile
+    ? medias
+    : medias.filter((media) => (grouped[media.id] ?? []).length > 0);
+
+  if (visibleMedias.length === 0) {
+    return (
+      <section className={styles.emptyState}>
+        <h3>{emptyLabel}</h3>
+      </section>
+    );
+  }
+
+  return (
+    <div className={styles.worksGroups}>
+      {visibleMedias.map((media) => (
+        <div key={media.id} className={styles.worksMedia}>
+          <h4 className={styles.worksMediaTitle} style={{ color: media.color }}>
+            {media.label}
+          </h4>
+          <WorkListEditor
+            items={grouped[media.id] ?? []}
+            editable={isOwnProfile}
+            mediaType={media.id}
+            mediaLabel={media.label}
+            emptyLabel={`Nenhuma obra de ${media.label.toLowerCase()} ainda.`}
+            onChange={(items) => onSave(media.id, items)}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function profileToUser(profile, fallbackUser) {
   const usernameLabel = profile.username
@@ -169,6 +222,16 @@ function ProfilePage() {
     }
   };
 
+  const handleSaveTopWorks = async (mediaType, items) => {
+    const updated = await profileApi.updateTopWorks(token, mediaType, items);
+    setProfile(updated);
+  };
+
+  const handleSaveNextWorks = async (mediaType, items) => {
+    const updated = await profileApi.updateNextWorks(token, mediaType, items);
+    setProfile(updated);
+  };
+
   const fallbackUser = useMemo(
     () =>
       user
@@ -309,6 +372,63 @@ function ProfilePage() {
             </section>
           )}
         </>
+      )}
+
+      {activeTab === "top" && (
+        <section className={styles.works}>
+          <header className={styles.worksHeader}>
+            <h3>Top 5</h3>
+            <p>
+              {isOwnProfile
+                ? "Seu top 5 de cada mídia: livros, filmes, séries, jogos e HQs. Sempre público."
+                : "As obras favoritas deste perfil, por tipo de mídia."}
+            </p>
+          </header>
+          <WorksTab
+            works={profile?.topWorks ?? []}
+            medias={preferredCategories}
+            isOwnProfile={isOwnProfile}
+            onSave={handleSaveTopWorks}
+            emptyLabel={
+              isOwnProfile
+                ? "Monte seu Top 5 adicionando a primeira obra."
+                : "Este perfil ainda não montou um Top 5."
+            }
+          />
+        </section>
+      )}
+
+      {activeTab === "next" && (
+        <section className={styles.works}>
+          <header className={styles.worksHeader}>
+            <h3>Próximas obras</h3>
+            <p>
+              {isOwnProfile
+                ? profile?.nextWorksPrivate
+                  ? "Até 5 por mídia que você quer consumir. Visível só para você."
+                  : "Até 5 por mídia que você quer consumir. Pública."
+                : "As próximas obras que este perfil pretende consumir, por mídia."}
+            </p>
+          </header>
+          {!isOwnProfile && profile?.nextWorksPrivate ? (
+            <section className={styles.emptyState}>
+              <h3>Lista privada.</h3>
+              <p>Este perfil mantém as próximas obras em segredo.</p>
+            </section>
+          ) : (
+            <WorksTab
+              works={profile?.nextWorks ?? []}
+              medias={preferredCategories}
+              isOwnProfile={isOwnProfile}
+              onSave={handleSaveNextWorks}
+              emptyLabel={
+                isOwnProfile
+                  ? "Adicione a primeira obra que você quer consumir."
+                  : "Este perfil ainda não listou próximas obras."
+              }
+            />
+          )}
+        </section>
       )}
 
       {activeTab === "about" && (

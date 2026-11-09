@@ -104,7 +104,7 @@ function WorkSearchStep({ mediaType, categoryLabel, onSelect, onRequestNew }) {
           <p className={styles.hint}>Nenhuma obra encontrada.</p>
         )}
 
-        {query.trim().length >= MIN_QUERY_LENGTH && (
+        {onRequestNew && query.trim().length >= MIN_QUERY_LENGTH && (
           <button
             type="button"
             className={styles.requestNew}

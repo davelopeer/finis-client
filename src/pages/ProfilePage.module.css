@@ -107,6 +107,44 @@
   color: var(--color-primary) !important;
 }
 
+.works {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.worksHeader h3 {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.worksHeader p {
+  color: var(--color-ink-500);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.worksGroups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+.worksMedia {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.worksMediaTitle {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
 .emptyState {
   padding: var(--spacing-7);
   text-align: center;

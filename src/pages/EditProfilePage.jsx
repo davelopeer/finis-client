@@ -5,6 +5,7 @@ import * as profileApi from "../api/profile.js";
 import { useAuth } from "../auth/AuthContext.jsx";
 import Avatar from "../components/ui/Avatar.jsx";
 import Button from "../components/ui/Button.jsx";
+import Checkbox from "../components/ui/Checkbox.jsx";
 import Icon from "../components/ui/Icon.jsx";
 import { currentUser, MEDIA_CATEGORIES } from "../data/mockData.js";
 import styles from "./EditProfilePage.module.css";
@@ -36,6 +37,7 @@ function EditProfilePage() {
   const [mediaPreferences, setMediaPreferences] = useState(
     MEDIA_CATEGORIES.map((c) => c.id),
   );
+  const [nextWorksPrivate, setNextWorksPrivate] = useState(false);
   const [avatarFile, setAvatarFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [status, setStatus] = useState("loading");
@@ -60,6 +62,7 @@ function EditProfilePage() {
               ? data.mediaPreferences
               : MEDIA_CATEGORIES.map((c) => c.id),
           );
+          setNextWorksPrivate(Boolean(data.nextWorksPrivate));
           setStatus("success");
         }
       } catch (error) {
@@ -120,6 +123,7 @@ function EditProfilePage() {
         username: normalizedUsername,
         description: description.trim() || null,
         mediaPreferences: prefsToSave,
+        nextWorksPrivate,
       });
       let nextProfile = updatedProfile;
 
@@ -303,6 +307,22 @@ function EditProfilePage() {
             );
           })}
         </ul>
+      </fieldset>
+
+      <fieldset className={styles.mediaPicker}>
+        <legend className={styles.mediaPickerLegend}>
+          <span>Próximas obras</span>
+          <span className={styles.helpText}>
+            Sua lista de Top 5 é sempre pública. A lista de próximas obras pode
+            ficar visível só para você.
+          </span>
+        </legend>
+        <Checkbox
+          name="nextWorksPrivate"
+          label="Deixar minhas próximas obras privadas"
+          checked={nextWorksPrivate}
+          onChange={setNextWorksPrivate}
+        />
       </fieldset>
 
       <div className={styles.feedback} aria-live="polite">
