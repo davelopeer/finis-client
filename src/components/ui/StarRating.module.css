@@ -108,9 +108,15 @@
   white-space: nowrap;
 }
 
+/* The click zones overlay the stars, so a box outline on :focus draws a
+   square through the star. Suppress the mouse-focus box and instead tint the
+   star underneath when the zone is focused via keyboard. */
 .halfZone:focus,
 .fullZone:focus {
-  outline: 2px solid var(--color-primary, #7b1113);
-  outline-offset: 1px;
-  border-radius: 2px;
+  outline: none;
+}
+
+.halfZone:focus-visible ~ .star,
+.fullZone:focus-visible ~ .star {
+  color: #d4a017;
 }
