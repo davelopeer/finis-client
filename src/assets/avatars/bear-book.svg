@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Urso lendo um livro">
+  <defs>
+    <linearGradient id="bearBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4f9c5c"/>
+      <stop offset="1" stop-color="#2d6b3c"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bearBg)"/>
+  <circle cx="256" cy="226" r="152" fill="#ffffff" opacity="0.13"/>
+  <!-- ears -->
+  <circle cx="174" cy="150" r="48" fill="#8a5a3b"/>
+  <circle cx="338" cy="150" r="48" fill="#8a5a3b"/>
+  <circle cx="174" cy="150" r="24" fill="#b5835b"/>
+  <circle cx="338" cy="150" r="24" fill="#b5835b"/>
+  <!-- head -->
+  <ellipse cx="256" cy="232" rx="142" ry="130" fill="#8a5a3b"/>
+  <!-- muzzle -->
+  <ellipse cx="256" cy="286" rx="82" ry="62" fill="#d9b48a"/>
+  <ellipse cx="256" cy="258" rx="22" ry="16" fill="#3b2a1d"/>
+  <!-- eyes -->
+  <circle cx="208" cy="214" r="15" fill="#2b1d14"/>
+  <circle cx="304" cy="214" r="15" fill="#2b1d14"/>
+  <circle cx="213" cy="209" r="5" fill="#ffffff"/>
+  <circle cx="309" cy="209" r="5" fill="#ffffff"/>
+  <!-- open book -->
+  <path d="M150 452 L150 374 L256 392 L256 470 Z" fill="#3a5f2c"/>
+  <path d="M362 452 L362 374 L256 392 L256 470 Z" fill="#30501f"/>
+  <path d="M160 444 L160 382 L252 398 L252 462 Z" fill="#fdf6e3"/>
+  <path d="M352 444 L352 382 L260 398 L260 462 Z" fill="#f1e6cb"/>
+  <g stroke="#c9ad7a" stroke-width="5" stroke-linecap="round">
+    <line x1="176" y1="406" x2="238" y2="416"/>
+    <line x1="176" y1="422" x2="238" y2="432"/>
+    <line x1="274" y1="416" x2="336" y2="406"/>
+    <line x1="274" y1="432" x2="336" y2="422"/>
+  </g>
+</svg>

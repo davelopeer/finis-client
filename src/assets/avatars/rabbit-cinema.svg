@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Coelho assistindo a um filme no cinema">
+  <defs>
+    <linearGradient id="rabbitBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c23a30"/>
+      <stop offset="1" stop-color="#8e2420"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#rabbitBg)"/>
+  <circle cx="256" cy="222" r="152" fill="#ffffff" opacity="0.13"/>
+  <!-- ears -->
+  <ellipse cx="214" cy="120" rx="28" ry="86" transform="rotate(-10 214 120)" fill="#f0ece3"/>
+  <ellipse cx="298" cy="120" rx="28" ry="86" transform="rotate(10 298 120)" fill="#f0ece3"/>
+  <ellipse cx="214" cy="126" rx="13" ry="60" transform="rotate(-10 214 126)" fill="#f2a7ad"/>
+  <ellipse cx="298" cy="126" rx="13" ry="60" transform="rotate(10 298 126)" fill="#f2a7ad"/>
+  <!-- head -->
+  <ellipse cx="256" cy="242" rx="122" ry="108" fill="#f0ece3"/>
+  <!-- cheeks -->
+  <ellipse cx="200" cy="288" rx="40" ry="34" fill="#faf7f0"/>
+  <ellipse cx="312" cy="288" rx="40" ry="34" fill="#faf7f0"/>
+  <!-- eyes (behind glasses) -->
+  <circle cx="212" cy="214" r="12" fill="#2b1d1a"/>
+  <circle cx="300" cy="214" r="12" fill="#2b1d1a"/>
+  <!-- 3D glasses -->
+  <rect x="168" y="192" width="176" height="46" rx="16" fill="#14181f"/>
+  <rect x="178" y="201" width="68" height="28" rx="10" fill="#e4453b"/>
+  <rect x="266" y="201" width="68" height="28" rx="10" fill="#2f7fd1"/>
+  <rect x="246" y="208" width="20" height="8" rx="4" fill="#14181f"/>
+  <!-- nose -->
+  <path d="M244 258 L268 258 Q256 274 256 274 Q256 274 244 258 Z" fill="#e06b73"/>
+  <!-- mouth -->
+  <path d="M256 272 L256 286 M256 286 Q240 298 226 288 M256 286 Q272 298 286 288" fill="none" stroke="#9a8f82" stroke-width="4" stroke-linecap="round"/>
+  <!-- front teeth -->
+  <rect x="248" y="286" width="16" height="18" rx="4" fill="#ffffff"/>
+  <line x1="256" y1="286" x2="256" y2="304" stroke="#ddd5c8" stroke-width="2"/>
+  <!-- whiskers -->
+  <g stroke="#d8cfc0" stroke-width="3" stroke-linecap="round">
+    <line x1="224" y1="266" x2="166" y2="256"/>
+    <line x1="224" y1="276" x2="168" y2="280"/>
+    <line x1="288" y1="266" x2="346" y2="256"/>
+    <line x1="288" y1="276" x2="344" y2="280"/>
+  </g>
+  <!-- popcorn bucket -->
+  <path d="M196 396 L316 396 L300 478 L212 478 Z" fill="#f4eee3"/>
+  <g fill="#d23a30">
+    <rect x="210" y="396" width="16" height="82"/>
+    <rect x="248" y="396" width="16" height="82"/>
+    <rect x="286" y="396" width="16" height="82"/>
+  </g>
+  <g fill="#f6d976">
+    <circle cx="214" cy="388" r="16"/>
+    <circle cx="244" cy="378" r="18"/>
+    <circle cx="278" cy="386" r="16"/>
+    <circle cx="298" cy="392" r="13"/>
+    <circle cx="230" cy="376" r="13"/>
+    <circle cx="262" cy="388" r="14"/>
+  </g>
+</svg>

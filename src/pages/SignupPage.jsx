@@ -3,9 +3,21 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext.jsx";
 import Avatar from "../components/ui/Avatar.jsx";
 import Button from "../components/ui/Button.jsx";
+import { loadPresetAsFile } from "../utils/presetAvatar.js";
+import bearBook from "../assets/avatars/bear-book.svg";
+import rabbitCinema from "../assets/avatars/rabbit-cinema.svg";
+import wolfGaming from "../assets/avatars/wolf-gaming.svg";
+import giraffeSeries from "../assets/avatars/giraffe-series.svg";
 import styles from "./LoginPage.module.css";
 
 const usernamePattern = /^[a-zA-Z0-9_-]+$/;
+
+const PRESET_AVATARS = [
+  { id: "bear-book", label: "Urso leitor", src: bearBook },
+  { id: "rabbit-cinema", label: "Coelho no cinema", src: rabbitCinema },
+  { id: "wolf-gaming", label: "Lobo gamer", src: wolfGaming },
+  { id: "giraffe-series", label: "Girafa das séries", src: giraffeSeries },
+];
 
 function validateUsername(username) {
   if (!username) {
@@ -36,6 +48,7 @@ function SignupPage() {
     username: "",
   });
   const [avatarFile, setAvatarFile] = useState(null);
+  const [selectedPresetId, setSelectedPresetId] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
   const [error, setError] = useState("");
   const [usernameError, setUsernameError] = useState("");
@@ -63,7 +76,19 @@ function SignupPage() {
 
   const handleAvatarChange = (event) => {
     setAvatarFile(event.target.files?.[0] ?? null);
+    setSelectedPresetId("");
     setAvatarError("");
+  };
+
+  const handlePresetSelect = async (preset) => {
+    setAvatarError("");
+    try {
+      const file = await loadPresetAsFile(preset.src, preset.id);
+      setAvatarFile(file);
+      setSelectedPresetId(preset.id);
+    } catch (err) {
+      setAvatarError(err.message);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -207,21 +232,54 @@ function SignupPage() {
 
           <section className={styles.avatarSection}>
             <Avatar src={previewUrl} alt="Prévia da foto de perfil" size="lg" />
-            <label className={styles.field} htmlFor="avatar">
-              <span>Foto de perfil</span>
-              <input
-                id="avatar"
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={handleAvatarChange}
-                required
-              />
+            <div className={styles.avatarControls}>
+              <label className={styles.field} htmlFor="avatar">
+                <span>Foto de perfil</span>
+                <input
+                  id="avatar"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleAvatarChange}
+                />
+              </label>
+
+              <div className={styles.presetPicker}>
+                <span className={styles.presetLabel}>
+                  Ou escolha uma foto pronta
+                </span>
+                <div
+                  className={styles.presetOptions}
+                  role="group"
+                  aria-label="Fotos prontas"
+                >
+                  {PRESET_AVATARS.map((preset) => (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      className={[
+                        styles.presetOption,
+                        selectedPresetId === preset.id
+                          ? styles.presetOptionSelected
+                          : "",
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                      onClick={() => handlePresetSelect(preset)}
+                      aria-pressed={selectedPresetId === preset.id}
+                      title={preset.label}
+                    >
+                      <img src={preset.src} alt={preset.label} />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {avatarError ? (
                 <span className={styles.errorMessage} role="alert">
                   {avatarError}
                 </span>
               ) : null}
-            </label>
+            </div>
           </section>
 
           <div className={styles.fieldGrid}>
