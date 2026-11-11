@@ -10,6 +10,7 @@ function buildReviewBody(payload) {
   body.append("rating", String(payload.rating ?? 0));
   body.append("isMasterpiece", String(payload.isMasterpiece ?? false));
   body.append("description", payload.description ?? "");
+  body.append("spoilerDescription", payload.spoilerDescription ?? "");
   body.append("isPrivate", String(payload.isPrivate ?? false));
 
   if (payload.finishedAt) {

@@ -7,10 +7,12 @@ import Icon from "../ui/Icon.jsx";
 import RecommendationBadge from "../ui/RecommendationBadge.jsx";
 import styles from "./PostCard.module.css";
 
-function DescriptionPreview({ text, title }) {
+function DescriptionPreview({ text, spoiler, title }) {
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [spoilerRevealed, setSpoilerRevealed] = useState(false);
   const textRef = useRef(null);
+  const hasSpoiler = Boolean(spoiler);
 
   useEffect(() => {
     const element = textRef.current;
@@ -30,6 +32,8 @@ function DescriptionPreview({ text, title }) {
 
   useEffect(() => {
     if (!isModalOpen) {
+      // Re-blur the spoiler every time the full view is reopened.
+      setSpoilerRevealed(false);
       return undefined;
     }
 
@@ -43,16 +47,24 @@ function DescriptionPreview({ text, title }) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isModalOpen]);
 
-  if (!text) {
+  if (!text && !hasSpoiler) {
     return null;
   }
 
+  // A spoiler-only finis still needs an entry point into the full view.
+  const canOpenModal = Boolean(text)
+    ? isOverflowing || text.length > 220
+    : true;
+  const showReadMore = canOpenModal || hasSpoiler;
+
   return (
     <div className={styles.descriptionBlock}>
-      <p ref={textRef} className={styles.description}>
-        {text}
-      </p>
-      {isOverflowing || text.length > 220 ? (
+      {text ? (
+        <p ref={textRef} className={styles.description}>
+          {text}
+        </p>
+      ) : null}
+      {showReadMore ? (
         <button
           type="button"
           className={styles.readMore}
@@ -77,7 +89,32 @@ function DescriptionPreview({ text, title }) {
                 <h2 id="review-description-title" className={styles.modalTitle}>
                   {title}
                 </h2>
-                <p className={styles.modalText}>{text}</p>
+                {text ? <p className={styles.modalText}>{text}</p> : null}
+                {hasSpoiler ? (
+                  <section className={styles.spoilerSection}>
+                    <h3 className={styles.spoilerHeading}>Spoilers</h3>
+                    <div className={styles.spoilerBody}>
+                      <p
+                        className={`${styles.spoilerText} ${
+                          spoilerRevealed ? styles.spoilerTextRevealed : ""
+                        }`}
+                        aria-hidden={!spoilerRevealed}
+                      >
+                        {spoiler}
+                      </p>
+                      {!spoilerRevealed ? (
+                        <button
+                          type="button"
+                          className={styles.spoilerReveal}
+                          onClick={() => setSpoilerRevealed(true)}
+                        >
+                          <Icon name="eye" size={16} />
+                          ver spoilers
+                        </button>
+                      ) : null}
+                    </div>
+                  </section>
+                ) : null}
                 <div className={styles.modalActions}>
                   <button
                     type="button"
@@ -139,7 +176,11 @@ function PostCard({ post, canManage = false, onEdit, onDelete }) {
         <h3 className={styles.title}>{post.title}</h3>
         {post.subtitle && <p className={styles.subtitle}>{post.subtitle}</p>}
 
-        <DescriptionPreview text={post.description} title={post.title} />
+        <DescriptionPreview
+          text={post.description}
+          spoiler={post.spoilerDescription}
+          title={post.title}
+        />
 
         <footer className={styles.actions}>
           <button

@@ -175,6 +175,64 @@
   white-space: pre-wrap;
 }
 
+.spoilerSection {
+  margin-top: var(--spacing-4);
+  padding-top: var(--spacing-4);
+  border-top: 1px solid var(--color-ink-100);
+}
+
+.spoilerHeading {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-500);
+  margin-bottom: var(--spacing-2);
+}
+
+.spoilerBody {
+  position: relative;
+}
+
+.spoilerText {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-ink-700);
+  white-space: pre-wrap;
+  filter: blur(6px);
+  user-select: none;
+  transition: filter var(--transition-base);
+}
+
+.spoilerTextRevealed {
+  filter: none;
+  user-select: text;
+}
+
+.spoilerReveal {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: fit-content;
+  height: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-surface-raised);
+  background-color: var(--color-ink-900);
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+}
+
+.spoilerReveal:hover {
+  transform: scale(1.03);
+}
+
 .modalActions {
   display: flex;
   justify-content: flex-end;

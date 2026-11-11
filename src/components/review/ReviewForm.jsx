@@ -48,6 +48,9 @@ function ReviewForm({
   const [description, setDescription] = useState(
     initialValues?.description ?? "",
   );
+  const [spoilerDescription, setSpoilerDescription] = useState(
+    initialValues?.spoilerDescription ?? "",
+  );
   const [finishedAt, setFinishedAt] = useState(
     initialValues?.finishedAt || todayISODate(),
   );
@@ -55,11 +58,15 @@ function ReviewForm({
 
   const descriptionLength = [...description].length;
   const remainingCharacters = MAX_REVIEW_DESCRIPTION_LENGTH - descriptionLength;
+  const spoilerLength = [...spoilerDescription].length;
+  const remainingSpoilerCharacters =
+    MAX_REVIEW_DESCRIPTION_LENGTH - spoilerLength;
   const canSubmit =
     Boolean(resolvedWork?.id) &&
     rating > 0 &&
     finishedAt &&
     remainingCharacters >= 0 &&
+    remainingSpoilerCharacters >= 0 &&
     !isSubmitting;
 
   const handleSubmit = (event) => {
@@ -71,6 +78,7 @@ function ReviewForm({
       rating,
       isMasterpiece,
       description,
+      spoilerDescription,
       finishedAt,
       isPrivate,
     });
@@ -143,6 +151,26 @@ function ReviewForm({
           className={`${styles.counter} ${remainingCharacters < 0 ? styles.counterOver : ""}`}
         >
           {remainingCharacters} caracteres restantes
+        </div>
+      </div>
+
+      <div className={styles.field}>
+        <label htmlFor="review-spoiler-description">
+          Descrição com spoiler (opcional)
+        </label>
+        <textarea
+          id="review-spoiler-description"
+          className={styles.textarea}
+          rows={6}
+          maxLength={MAX_REVIEW_DESCRIPTION_LENGTH}
+          placeholder="Comente livremente os spoilers. Fica oculto até quem vê escolher revelar."
+          value={spoilerDescription}
+          onChange={(event) => setSpoilerDescription(event.target.value)}
+        />
+        <div
+          className={`${styles.counter} ${remainingSpoilerCharacters < 0 ? styles.counterOver : ""}`}
+        >
+          {remainingSpoilerCharacters} caracteres restantes
         </div>
       </div>
 
